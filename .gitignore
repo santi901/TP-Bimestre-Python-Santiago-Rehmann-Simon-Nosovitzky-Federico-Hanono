@@ -1,0 +1,11 @@
+# Base de datos generada
+live_music.db
+
+# Cache de Python
+__pycache__/
+*.pyc
+
+# Entornos virtuales
+venv/
+.venv/
+env/
