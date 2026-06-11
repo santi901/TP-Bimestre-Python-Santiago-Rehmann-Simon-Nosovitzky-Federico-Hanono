@@ -24,7 +24,7 @@ from datos.crud import (
 crear_base_datos()
 
 
-st.title("🎵 Live Music Pro")
+st.title("Live Music Pro")
 
 menu = st.sidebar.selectbox(
     "Menú de navegación",
