@@ -19,6 +19,8 @@ from datos.crud import (
     crear_concierto, obtener_conciertos, obtener_conciertos_con_artista,
     actualizar_concierto, borrar_concierto,
 )
+from datos.importar_csv import importar_csv_albumes, RUTA_CSV_DEFAULT
+from datos.estadisticas import calcular_estadisticas_anio
 
 # Nos aseguramos de que la base y las tablas existan al iniciar la app.
 crear_base_datos()
@@ -28,7 +30,7 @@ st.title("Live Music Pro")
 
 menu = st.sidebar.selectbox(
     "Menú de navegación",
-    ["Artistas", "Álbumes", "Conciertos"]
+    ["Artistas", "Álbumes", "Conciertos", "Estadísticas"]
 )
 
 
@@ -282,3 +284,38 @@ elif menu == "Conciertos":
             if st.button("Eliminar concierto"):
                 borrar_concierto(opciones[seleccion])
                 st.success("Concierto eliminado. Actualizá la página para ver los cambios.")
+
+
+# ---------------------------------------------------------------------------
+# ESTADÍSTICAS — Ampliación del Integrador (datos propios y tendencia central)
+# ---------------------------------------------------------------------------
+elif menu == "Estadísticas":
+
+    st.header("Análisis de datos")
+
+    # --- Parte 1 y 2: dataset propio (CSV) e importación a la base ---
+    st.subheader("Importar dataset propio")
+    st.write(
+        "El archivo `albumes.csv` tiene 15 álbumes de ejemplo, con años de "
+        "lanzamiento repetidos a propósito para que la moda tenga sentido."
+    )
+
+    if st.button("Importar albumes.csv a la base"):
+        importar_csv_albumes(RUTA_CSV_DEFAULT)
+        st.success("CSV importado correctamente. Mirá la lista de álbumes para verificarlo.")
+
+    # --- Parte 3: medidas de tendencia central con Pandas ---
+    st.subheader("Medidas de tendencia central — Año de lanzamiento")
+
+    resultado = calcular_estadisticas_anio()
+
+    if resultado is None:
+        st.warning("Todavía no hay álbumes cargados para analizar.")
+    else:
+        st.write(f"Cantidad de álbumes analizados: {resultado['cantidad_albumes']}")
+        st.write(f"Media: {resultado['media']:.2f}")
+        st.write(f"Mediana: {resultado['mediana']}")
+        st.write(f"Moda: {resultado['moda']}")
+
+        st.subheader("Interpretación")
+        st.write(resultado["interpretacion"])
